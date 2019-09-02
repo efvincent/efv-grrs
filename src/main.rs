@@ -1,18 +1,17 @@
-use structopt::StructOpt;
-use std::fs::File;
-use std::io::{BufRead,BufReader};
-use failure::ResultExt;
 use exitfailure::ExitFailure;
+use failure::ResultExt;
+use log::info;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 use std::iter::Iterator;
-use log::{info};
+use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
 struct Cli {
     pattern: String,
     #[structopt(parse(from_str))]
-    path: std::path::PathBuf
+    path: std::path::PathBuf,
 }
-
 
 #[test]
 fn can_find_match() {
@@ -36,8 +35,8 @@ fn main() -> Result<(), ExitFailure> {
     // program must therefore return Ok(()). Note the inner type () is like unit, and
     // there is no semicolon on the returned expression line in the function. Could also
     // have used the keyword return Ok(()).
-    let f = File::open(&args.path)
-        .with_context(|_| format!("could not read file {:?}", &args.path))?;
+    let f =
+        File::open(&args.path).with_context(|_| format!("could not read file {:?}", &args.path))?;
     let reader = BufReader::new(f);
     /*
     Notes:
@@ -49,7 +48,11 @@ fn main() -> Result<(), ExitFailure> {
     empty string. This effectively sinks errors.
      */
 
-    grrs::find_matches(reader.lines().map(|l| l.unwrap_or_default()), &args.pattern, std::io::stdout());
+    grrs::find_matches(
+        reader.lines().map(|l| l.unwrap_or_default()),
+        &args.pattern,
+        std::io::stdout(),
+    );
 
     Ok(())
 }
