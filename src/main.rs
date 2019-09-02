@@ -1,4 +1,6 @@
 use structopt::StructOpt;
+use std::fs::File;
+use std::io::{BufRead,BufReader};
 
 #[derive(StructOpt)]
 struct Cli {
@@ -9,5 +11,20 @@ struct Cli {
 
 fn main() {
     let args = Cli::from_args();
-    println!("pattern: {}\npath: {:?}", args.pattern, args.path);
+    let f = File::open(&args.path).expect("Could not find file");
+    let reader = BufReader::new(f);
+    /*
+    Notes:
+     * `f` and `reader` will go out of scope and close without leaking
+     * reader.lines() comes from the `BufReader` trait
+     * `BufReader` must be in scope - that is have a use command, to work
+     * `lines()` returns an interator of `std::result::results`
+     * `unwrap_or()` returns the value associated with an Ok(T) result, or the
+    empty string. This effectively sinks errors.
+    */
+    for line in reader.lines().map(|l| l.unwrap_or("")) {
+        if line.contains(&args.pattern) {
+            println!("{}", line);
+        }
+    }
 }
