@@ -4,7 +4,7 @@ use std::io::{BufRead,BufReader};
 use failure::ResultExt;
 use exitfailure::ExitFailure;
 use std::iter::Iterator;
-use log::{info,warn};
+use log::{info};
 
 #[derive(StructOpt, Debug)]
 struct Cli {
@@ -13,24 +13,13 @@ struct Cli {
     path: std::path::PathBuf
 }
 
-fn find_matches(lines: impl IntoIterator<Item=String> , pattern: &str, mut writer: impl std::io::Write) -> ()
-{
-    for line in lines.into_iter() {
-        if line.contains(pattern) {
-            match writeln!(writer, "{}", line) {
-                Err(err) => warn!("could not write the line: {}", err),
-                Ok(_) => ()
-            }
-        }
-    }
-}
 
 #[test]
 fn can_find_match() {
     let mut result = Vec::new();
     let test = b"abc\ndef\nghi\njkl\nefvincent\nfoobar";
     let lines = test.lines().map(|l| l.unwrap());
-    find_matches(lines, "ef", &mut result);
+    grrs::find_matches(lines, "ef", &mut result);
     assert_eq!(result, b"def\nefvincent\n");
 }
 
@@ -60,7 +49,7 @@ fn main() -> Result<(), ExitFailure> {
     empty string. This effectively sinks errors.
      */
 
-    find_matches(reader.lines().map(|l| l.unwrap_or_default()), &args.pattern, std::io::stdout());
+    grrs::find_matches(reader.lines().map(|l| l.unwrap_or_default()), &args.pattern, std::io::stdout());
 
     Ok(())
 }
