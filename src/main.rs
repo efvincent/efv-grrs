@@ -19,10 +19,10 @@ fn main() {
      * reader.lines() comes from the `BufReader` trait
      * `BufReader` must be in scope - that is have a use command, to work
      * `lines()` returns an interator of `std::result::results`
-     * `unwrap_or()` returns the value associated with an Ok(T) result, or the
+     * `unwrap_or_default()` returns the value associated with an Ok(T) result, or the
     empty string. This effectively sinks errors.
-    */
-    for line in reader.lines().map(|l| l.unwrap_or("")) {
+     */
+    for line in reader.lines().map(|l| l.unwrap_or_default()) {
         if line.contains(&args.pattern) {
             println!("{}", line);
         }
