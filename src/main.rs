@@ -4,7 +4,7 @@ use std::io::{BufRead,BufReader};
 use failure::ResultExt;
 use exitfailure::ExitFailure;
 use std::iter::Iterator;
-use log::{info};
+use log::{info,warn};
 
 #[derive(StructOpt, Debug)]
 struct Cli {
@@ -17,7 +17,10 @@ fn find_matches(lines: impl IntoIterator<Item=String> , pattern: &str, mut write
 {
     for line in lines.into_iter() {
         if line.contains(pattern) {
-            writeln!(writer, "{}", line);
+            match writeln!(writer, "{}", line) {
+                Err(err) => warn!("could not write the line: {}", err),
+                Ok(_) => ()
+            }
         }
     }
 }
