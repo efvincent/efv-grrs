@@ -28,8 +28,10 @@ fn find_matches(lines: impl IntoIterator<Item=String> , pattern: &str, mut write
 #[test]
 fn can_find_match() {
     let mut result = Vec::new();
-    find_matches("abc\ndef\nghi\njkl".lines(), "ef", &mut result);
-    assert_eq!(result, b"def");
+    let test = b"abc\ndef\nghi\njkl\nefvincent\nfoobar";
+    let lines = test.lines().map(|l| l.unwrap());
+    find_matches(lines, "ef", &mut result);
+    assert_eq!(result, b"def\nefvincent\n");
 }
 
 fn main() -> Result<(), ExitFailure> {
