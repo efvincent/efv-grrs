@@ -4,6 +4,8 @@ use predicates::prelude::*;
 use tempfile::NamedTempFile;
 use std::io::Write;
 
+// Because this file is located in `./tests/cli.rs`, it will be found by `$ cargo test` and run automatically
+
 #[test]
 fn file_doesnt_exist() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::main_binary()?;
